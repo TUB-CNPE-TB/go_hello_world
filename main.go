@@ -1,25 +1,23 @@
 package main
 
 import (
-	"fmt"
-	"io/ioutil"
-	"log"
-	"net/http"
+    "fmt"
+    "log"
+    "net/http"
 )
 
 func main() {
-	http.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
-		log.Println("Running Hello World Handler")
+    var jsonData = []byte(`{
+        "message": "Hello World!"
+    }`)
 
-		b, err := ioutil.ReadAll(r.Body)
-		if err != nil {
-			log.Println("Error reading the Body.", err)
-			http.Error(rw, "Unable to read request body", http.StatusBadRequest)
-			return
-		}
-		fmt.Fprintf(rw, "Hello World %s", b)
-	})
-	log.Println("Starting the Server")
-	err := http.ListenAndServe(":9090", nil)
-	log.Fatal(err)
+    http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request){
+        w.Header().Set("Content-Type", "application/json")
+        w.Write(jsonData)
+    })
+
+    fmt.Printf("Starting server at port 9090\n")
+    if err := http.ListenAndServe(":9090", nil); err != nil {
+        log.Fatal(err)
+    }
 }
