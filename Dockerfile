@@ -6,5 +6,5 @@ COPY go.mod ./
 RUN go mod download
 COPY *.go ./
 RUN go build -o /docker-go-hello
-EXPOSE 9090
+EXPOSE 80
 CMD [ "/docker-go-hello" ]

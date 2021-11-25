@@ -17,7 +17,7 @@ func main() {
 			http.Error(rw, "Unable to read request body", http.StatusBadRequest)
 			return
 		}
-		fmt.Fprintf(rw, "Hello World %s", b)
+		fmt.Fprintf(rw, "Hello World %s\n", b)
 	})
 	log.Println("Starting the Server")
 	err := http.ListenAndServe(":9090", nil)
