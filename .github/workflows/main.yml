@@ -41,7 +41,7 @@ jobs:
       - name: Submit Coveralls
         env:
           COVERALLS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: goveralls -coverprofile=coverage.out -service=github
+        run: coveralls -coverprofile=coverage.out -service=github
 
       - name: Build helloworld image
         uses: docker/build-push-action@v1
