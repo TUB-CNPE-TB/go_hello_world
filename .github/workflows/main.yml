@@ -21,7 +21,7 @@ jobs:
     env:
       GROUP: europe-west3-docker.pkg.dev/cnpe-blue/sockshop
       COMMIT: ${{ github.sha }}
-      REPO: catalogue
+      REPO: helloworld
       GO_VERSION: 1.7.5
       GOPATH: /home/runner/work/go_hello_world/go_hello_world/go
 
@@ -45,7 +45,7 @@ jobs:
           push: false
           dockerfile: go/src/github.com/TUB-CNPE-TB/go_hello_world/Dockerfile
           path: go/src/github.com/TUB-CNPE-TB/go_hello_world
-          repository: ${{ env.GROUP }}/helloworld
+          repository: ${{ env.GROUP }}/${{ env.REPO }}
           tag_with_ref: true
           tag_with_sha: true
           
