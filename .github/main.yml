@@ -3,26 +3,53 @@ name: ci
 on:
   push:
     branches:
-      - "main"
+      - "*"  # run for branches
+    tags:
+      - "*"  # run for tags
+  pull_request:
+    branches:
+      - "*"  # run for branches
+    tags:
+      - "*"  # run for tags
 
 jobs:
   test:
+    defaults:
+      run:
+        working-directory: go/src/github.com/TUB-CNPE-TB/go_hello_world
     runs-on: ubuntu-latest
     env:
       GROUP: europe-west3-docker.pkg.dev/cnpe-blue/sockshop
       COMMIT: ${{ github.sha }}
-      REPO: helloworld
+      REPO: catalogue
+      GO_VERSION: 1.7.5
+      GOPATH: /home/runner/work/go_hello_world/go_hello_world/go
+
     steps:
       - uses: actions/checkout@v2
-        
-      # Build image
-      - name: Build image
+        with:
+          fetch-depth: 1
+          path: go/src/github.com/TUB-CNPE-TB/go_hello_world
+
+      - uses: actions/setup-go@v1
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Setup PATH
+        run: echo "${GOPATH}/bin" >> $GITHUB_PATH
+
+      - name: Submit Coveralls
+        env:
+          COVERALLS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: goveralls -coverprofile=coverage.out -service=github
+
+      - name: Build helloworld image
         uses: docker/build-push-action@v1
         if: startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/master'
         with:
           push: false
-          dockerfile: Dockerfile
-          path: target/
+          dockerfile: go/src/github.com/TUB-CNPE-TB/go_hello_world/Dockerfile
+          path: go/src/github.com/TUB-CNPE-TB/go_hello_world
           repository: ${{ env.GROUP }}/${{ env.REPO }}
           tag_with_ref: true
           tag_with_sha: true
