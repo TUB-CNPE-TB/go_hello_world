@@ -31,7 +31,7 @@ jobs:
           fetch-depth: 1
           path: go/src/github.com/TUB-CNPE-TB/go_hello_world
 
-      - uses: actions/setup-go@v1
+      - uses: actions/setup-go@v2
         with:
           go-version: ${{ env.GO_VERSION }}
 
@@ -39,11 +39,12 @@ jobs:
         run: echo "${GOPATH}/bin" >> $GITHUB_PATH
 
       - name: Build helloworld image
-        uses: docker/build-push-action@v1
+        uses: docker/build-push-action@v2
         if: startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/main'
         with:
           push: false
           dockerfile: go/src/github.com/TUB-CNPE-TB/go_hello_world/Dockerfile
+          tags: ${{ env.GROUP }}/${{ env.REPO }}:latest
           path: go/src/github.com/TUB-CNPE-TB/go_hello_world
           repository: ${{ env.GROUP }}/${{ env.REPO }}
           tag_with_ref: true
@@ -60,4 +61,4 @@ jobs:
 
       - name: Push to GAR
         if: startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/main'
-        run: docker push ${{ env.GROUP }}/${{ env.REPO }} --all-tags  
+        run: docker push ${{ env.GROUP }}/${{ env.REPO }} --all-tags
